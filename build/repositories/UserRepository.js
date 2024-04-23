@@ -9,19 +9,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserService = void 0;
-const database_1 = require("../database");
+exports.UserRepository = void 0;
 const User_1 = require("../entities/User");
-const UserRepository_1 = require("../repositories/UserRepository");
-class UserService {
-    constructor(userRepository = new UserRepository_1.UserRepository(database_1.AppDataSource.manager)) {
-        this.createUser = (name, email, password) => __awaiter(this, void 0, void 0, function* () {
-            const user = new User_1.User(name, email, password);
-            return yield this.userRepository.createUser(user);
+class UserRepository {
+    constructor(manager) {
+        this.createUser = (user) => __awaiter(this, void 0, void 0, function* () {
+            return yield this.manager.save(user);
         });
-        this.getUser = () => {
-        };
-        this.userRepository = userRepository;
+        this.getUser = (userId) => __awaiter(this, void 0, void 0, function* () {
+            return yield this.manager.findOne(User_1.User, { where: { id_user: userId } });
+        });
+        this.manager = manager;
     }
 }
-exports.UserService = UserService;
+exports.UserRepository = UserRepository;

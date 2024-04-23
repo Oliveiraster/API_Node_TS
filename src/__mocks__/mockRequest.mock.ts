@@ -1,7 +1,7 @@
 import { Request } from "express"
 import { Params } from 'express-serve-static-core'
 
-export const mockReq = ({params, query}: {params?: Params, query?: Params}): Request => {
+export const makeMockReq = ({params, query}: {params?: Params, query?: Params}): Request => {
         const request = {
             params: params || { },
             query: query || { }

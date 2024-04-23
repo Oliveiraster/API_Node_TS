@@ -1,20 +1,26 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const mockRequest_mock_1 = require("../__mocks__/mockRequest.mock");
 const mockResponse_mock_1 = require("../__mocks__/mockResponse.mock");
 const UserController_1 = require("./UserController");
-describe('UserController', () => {
-    const mockUserService = {
-        createUser: jest.fn(),
-        getAllUsers: jest.fn()
+const mockUserService = {
+    createUser: jest.fn()
+};
+jest.mock("../service/UserService", () => {
+    return {
+        userService: jest.fn().mockImplementation(() => {
+            return mockUserService;
+        })
     };
-    const userController = new UserController_1.UserController(mockUserService);
+});
+describe('UserController', () => {
+    const userController = new UserController_1.UserController();
     const mockRes = (0, mockResponse_mock_1.makeMockRes)();
     it(' Adicionar Usuario ', () => {
         const mockRequest = {
             body: {
                 name: 'Raphael',
-                email: 'rapha@email.com'
+                email: 'rapha@email.com',
+                password: '12345'
             }
         };
         userController.createUser(mockRequest, mockRes);
@@ -25,7 +31,8 @@ describe('UserController', () => {
         const mockRequest = {
             body: {
                 name: '',
-                email: 'rapha@email.com'
+                email: 'rapha@email.com',
+                password: '12345'
             }
         };
         userController.createUser(mockRequest, mockRes);
@@ -36,23 +43,32 @@ describe('UserController', () => {
         const mockRequest = {
             body: {
                 name: 'Raphael',
-                email: ''
+                email: '',
+                password: '12345'
             }
         };
         userController.createUser(mockRequest, mockRes);
         expect(mockRes.state.status).toBe(400);
         expect(mockRes.state.json).toMatchObject({ message: 'Bad request: Nome e email obrigatório' });
     });
-    it('Retorna a lista de usuarios', () => {
-        const mockRequest = (0, mockRequest_mock_1.mockReq)({});
-        userController.getAllUsers(mockRequest, mockRes);
-        expect(mockRes.state.status).toBe(200);
+    it('Retorna erro caso o usuario não informe o senha', () => {
+        const mockRequest = {
+            body: {
+                name: 'Raphael',
+                email: 'rapha@email.com',
+                password: ''
+            }
+        };
+        userController.createUser(mockRequest, mockRes);
+        expect(mockRes.state.status).toBe(400);
+        expect(mockRes.state.json).toMatchObject({ message: 'Bad request: Nome e email obrigatório' });
     });
     it('Retorna msg so usuario deletado', () => {
         const mockRequest = {
             body: {
                 name: 'Raphael',
-                email: ''
+                email: '',
+                password: '12345'
             }
         };
         userController.deleteUser(mockRequest, mockRes);

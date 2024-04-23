@@ -1,24 +1,33 @@
-import { mockReq } from "../__mocks__/mockRequest.mock"
-import { makeMockRes } from "../__mocks__/mockResponse.mock"
-import { UserService } from "../service/UserService"
 import { UserController } from "./UserController"
 import { Request } from "express"
+import { makeMockRes } from "../__mocks__/mockResponse.mock"
+import { makeMockReq } from '../__mocks__/mockRequest.mock'
 
+
+
+const mockUserService = {
+    createUser: jest.fn(),
+    getUser: jest.fn()
+}
+jest.mock("../service/UserService", () => {
+    return {
+        UserService: jest.fn().mockImplementation(() => {
+            return mockUserService
+        })
+    }
+})
 
 describe('UserController', ()=>{
-    const mockUserService: Partial<UserService> = {
-        createUser: jest.fn(),
-        getAllUsers: jest.fn()
-    }
-    const userController = new UserController(mockUserService as UserService)
+  
+    const userController = new UserController()
     const mockRes = makeMockRes()
-
 
     it(' Adicionar Usuario ', () => {
         const mockRequest = {
             body: {
                 name:'Raphael',
-                email: 'rapha@email.com'
+                email: 'rapha@email.com',
+                password: '12345'
             }
         } as Request
   
@@ -31,9 +40,11 @@ describe('UserController', ()=>{
         const mockRequest = {
             body: {
                 name:'',
-                email: 'rapha@email.com'
+                email: 'rapha@email.com',
+                password: '12345'
             }
         } as Request
+
         userController.createUser(mockRequest, mockRes)
         expect(mockRes.state.status).toBe(400)
         expect(mockRes.state.json).toMatchObject({message: 'Bad request: Nome e email obrigatório'}) 
@@ -43,7 +54,8 @@ describe('UserController', ()=>{
         const mockRequest = {
             body: {
                 name:'Raphael',
-                email: ''
+                email: '',
+                password: '12345'
             }
         } as Request
         userController.createUser(mockRequest, mockRes)
@@ -51,17 +63,26 @@ describe('UserController', ()=>{
         expect(mockRes.state.json).toMatchObject({message: 'Bad request: Nome e email obrigatório'}) 
     })
 
-    it('Retorna a lista de usuarios', () => {
-        const mockRequest = mockReq({})
-        userController.getAllUsers(mockRequest, mockRes)
-        expect(mockRes.state.status).toBe(200)
+    it('Retorna erro caso o usuario não informe o senha', () => {
+        const mockRequest = {
+            body: {
+                 name:'Raphael',
+                email: 'rapha@email.com',
+                password: ''
+            }
+        } as Request
+        userController.createUser(mockRequest, mockRes)
+        expect(mockRes.state.status).toBe(400)
+        expect(mockRes.state.json).toMatchObject({message: 'Bad request: Nome e email obrigatório'}) 
     })
+
 
     it('Retorna msg so usuario deletado', () => {
         const mockRequest = {
             body: {
                 name:'Raphael',
-                email: ''
+                email: '',
+                password: '12345'
             }
         } as Request
         userController.deleteUser(mockRequest, mockRes)

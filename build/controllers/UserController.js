@@ -9,12 +9,11 @@ class UserController {
             if (!body.name || !body.email) {
                 return res.status(400).json({ message: 'Bad request: Nome e email obrigatório' });
             }
-            this.userService.createUser(body.name, body.email);
+            this.userService.createUser(body.name, body.email, body.password);
             return res.status(201).json({ message: 'Usuario cadastrado!' });
         };
-        this.getAllUsers = (req, res) => {
-            const users = this.userService.getAllUsers();
-            return res.status(200).json(users);
+        this.getUsers = (req, res) => {
+            return res.status(200);
         };
         this.deleteUser = (req, res) => {
             const user = req.body;

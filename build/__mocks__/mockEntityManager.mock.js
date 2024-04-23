@@ -9,19 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserService = void 0;
-const database_1 = require("../database");
-const User_1 = require("../entities/User");
-const UserRepository_1 = require("../repositories/UserRepository");
-class UserService {
-    constructor(userRepository = new UserRepository_1.UserRepository(database_1.AppDataSource.manager)) {
-        this.createUser = (name, email, password) => __awaiter(this, void 0, void 0, function* () {
-            const user = new User_1.User(name, email, password);
-            return yield this.userRepository.createUser(user);
-        });
-        this.getUser = () => {
-        };
-        this.userRepository = userRepository;
-    }
-}
-exports.UserService = UserService;
+exports.getMockEntityManager = void 0;
+const getMockEntityManager = (_a) => __awaiter(void 0, [_a], void 0, function* ({ saveReturn = undefined, findOneReturn = undefined }) {
+    const manager = {};
+    manager.save = jest.fn().mockImplementation(() => Promise.resolve(saveReturn));
+    manager.findOne = jest.fn().mockImplementation(() => Promise.resolve(findOneReturn));
+    return manager;
+});
+exports.getMockEntityManager = getMockEntityManager;

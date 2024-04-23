@@ -4,28 +4,28 @@ import { UserService } from "../service/UserService"
 
 
 export class UserController {
-    userService:UserService
+
+    userService: UserService
 
     constructor(userService = new UserService()){
         this.userService = userService
     }
 
 
-    createUser = (req: Request, res:Response) => {
+     createUser = (req: Request, res:Response):Response => {
         const body = req.body
        
-        if(!body.name || !body.email){
+        if(!body.name || !body.email|| !body.password){
             return res.status(400).json({message:'Bad request: Nome e email obrigatório' })
         }
 
-        this.userService.createUser(body.name, body.email)
+        this.userService.createUser(body.name, body.email, body.password)
         return res.status(201).json({message: 'Usuario cadastrado!'})
     }
 
-    getAllUsers = (req: Request, res:Response) => {
+    getUser = (req: Request, res:Response) => {
 
-        const users = this.userService.getAllUsers()
-        return res.status(200).json(users)
+        return res.status(200)
     }
 
     deleteUser = (req: Request, res:Response) => {
@@ -33,4 +33,4 @@ export class UserController {
         console.log('Delete User', user)
         return res.status(200).json({message: `${user} Deletado!`})
     }   
-} 
+}  
