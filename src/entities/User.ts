@@ -19,7 +19,7 @@ export class User {
         email: string,
         password:string
     ){
-       this.id_user = randomUUID()
+        this.id_user = randomUUID()
         this.email = email
         this.name  = name
         this.password = password

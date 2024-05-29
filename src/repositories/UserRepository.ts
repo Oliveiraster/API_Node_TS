@@ -12,7 +12,7 @@ export class UserRepository{
     }
 
     createUser = async (user: User):Promise<User> => {
-        return await this.manager.save(user)
+        return  this.manager.save(user)
 
     }   
 

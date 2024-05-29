@@ -16,16 +16,21 @@ export class UserController {
         const body = req.body
        
         if(!body.name || !body.email|| !body.password){
-            return res.status(400).json({message:'Bad request: Nome e email obrigatório' })
+            return res.status(400).json({message:'Bad request: Nome, email e senha obrigatório' })
         }
 
         this.userService.createUser(body.name, body.email, body.password)
         return res.status(201).json({message: 'Usuario cadastrado!'})
     }
 
-    getUser = (req: Request, res:Response) => {
-
-        return res.status(200)
+    getUser = async (req: Request, res:Response) => {
+        const {userId} = req.params
+        const user = await this.userService.getUser(userId)
+        return res.status(200).json({
+            userId: user?.id_user,
+            email: user?.email,
+            name: user?.name
+        })
     }
 
     deleteUser = (req: Request, res:Response) => {

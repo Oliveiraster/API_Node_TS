@@ -47,7 +47,7 @@ describe('UserController', ()=>{
 
         userController.createUser(mockRequest, mockRes)
         expect(mockRes.state.status).toBe(400)
-        expect(mockRes.state.json).toMatchObject({message: 'Bad request: Nome e email obrigatório'}) 
+        expect(mockRes.state.json).toMatchObject({message: "Bad request: Nome, email e senha obrigatório"}) 
     })
 
     it('Retorna erro caso o usuario não informe o email', () => {
@@ -60,7 +60,7 @@ describe('UserController', ()=>{
         } as Request
         userController.createUser(mockRequest, mockRes)
         expect(mockRes.state.status).toBe(400)
-        expect(mockRes.state.json).toMatchObject({message: 'Bad request: Nome e email obrigatório'}) 
+        expect(mockRes.state.json).toMatchObject({message: "Bad request: Nome, email e senha obrigatório"}) 
     })
 
     it('Retorna erro caso o usuario não informe o senha', () => {
@@ -73,7 +73,7 @@ describe('UserController', ()=>{
         } as Request
         userController.createUser(mockRequest, mockRes)
         expect(mockRes.state.status).toBe(400)
-        expect(mockRes.state.json).toMatchObject({message: 'Bad request: Nome e email obrigatório'}) 
+        expect(mockRes.state.json).toMatchObject({message: "Bad request: Nome, email e senha obrigatório"}) 
     })
 
 
@@ -88,5 +88,15 @@ describe('UserController', ()=>{
         userController.deleteUser(mockRequest, mockRes)
         expect(mockRes.state.status).toBe(200)
         expect(mockRes.state.json).toMatchObject({message: `${mockRequest} Deletado!`}) 
+    })
+       it('Retorna o usuario com o ID informado', () => {
+        const mockRequest = makeMockReq({
+            params:{
+                userId: '12345'
+            }
+        })
+        userController.getUser(mockRequest, mockRes)
+        expect(mockUserService.getUser).toHaveBeenCalledWith('12345')
+        expect(mockRes.state.status).toBe(200)
     })
 }) 

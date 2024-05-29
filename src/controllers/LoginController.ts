@@ -1,31 +1,22 @@
 import {Request, Response} from 'express'
-import{ sign } from 'jsonwebtoken'
 
+import { UserService } from '../service/UserService'
 
-const user = {
-    userId: '12345',
-    name: 'Raphael',
-    email: 'rapha@email.com',
-    password: 'password'
-}
 
 export class LoginController {
+    userService: UserService
+
+    constructor(userService = new UserService()){
+        this.userService =userService
+    }
     login = async (req: Request, res: Response) => {
-
-        const tokenData = {
-            name: user.name,
-            email:user.email,
-
-        }
-
-        const tokenKey = '123456789'
-
-        const tokenOption = {
-            subject:  user.userId
-        }
-
-        const token = sign(tokenData, tokenKey, tokenOption)
-
+        const {email, password} = req.body
+        
+        try {
+            const token = await this.userService.getToken(email,password)
         return res.status(200).json({token})
+        } catch (error) {
+        return res.status(500).json({error})
+        }
     }
 }
